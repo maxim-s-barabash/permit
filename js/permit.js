@@ -6,7 +6,6 @@
 ;(function($, window, document, undefined) {
 
     $.permit = function(options){
-        var cPrefix = 'permit_';
         var settings = $.extend( {}, $.permit.defaults, options );
 
         // hide default permitted content
@@ -19,7 +18,7 @@
         $.each($(settings.permits), function(index, value) {
 
             // Iterate through user specified permits to show permitted content
-            if($.cookie(cPrefix+settings.permits[index]))
+            if($.cookie(settings.cPrefix+settings.permits[index]))
             {
                 // hide all permit content except selected permits
                 for(var i=0;i<settings.permits.length;i++)
@@ -74,13 +73,13 @@
         // This function issues new permits
         $.permit.issuePermit = function (permit,destination) {
             // create the permit, give it a value of 1
-            $.cookie(cPrefix+permit, 1);
+            $.cookie(settings.cPrefix+permit, 1);
             director(destination);
         };
 
         // This function revokes a specific permit
         $.permit.revokePermit = function (permit,newPermit,destination){
-            $.removeCookie(cPrefix+permit);
+            $.removeCookie(settings.cPrefix+permit);
             // if a new permit type is specified, issue that
             if(newPermit){
                 $.permit.issuePermit(newPermit);
@@ -105,7 +104,7 @@
             permit = typeof permit !== 'undefined' ? permit : settings.permits;
             var i = 0;
             $.each($(settings.permits), function(index, value) {
-                if($.cookie(cPrefix+settings.permits[index]))
+                if($.cookie(settings.cPrefix+settings.permits[index]))
                 {
                     i++;
                 }
@@ -126,9 +125,9 @@
         // This function revokes all permits
         function revokeAllPermits(permits){
             $.each($(permits), function(index, value) {
-                $.removeCookie(cPrefix+value);
+                $.removeCookie(settings.cPrefix+value);
             });
-        };
+        }
 
         // Issue new permit via Agent
         $('.permit-reissue').on('click',function(){
@@ -153,8 +152,15 @@
     };
 
     $.permit.defaults = {
-        permits: ['admin'], // value: array permit levels, default to admin; sets the available permission levels
-        reissueDestination: 'reload'
+        // value: array permit levels, default to admin;
+        // sets the available permission levels
+        permits: ['admin'],
+        // Specifies the action to be taken when a new permit is issued using
+        // the permits agent. Defaults to a javascript-enabled page reload.
+        // Otherwise it redirects to the specified location.
+        reissueDestination: 'reload',
+        // Prefix for cookies name
+        cPrefix: 'permit_'
     };
 
 })(jQuery, window, document );
