@@ -91,10 +91,15 @@
 
         // This function handles all reloads/redirects after permits are issued or revoked
         function director(destination){
-            if(destination){
-                window.location.href = destination;
-            }else{
-                window.location.reload();
+            destination = destination ? destination : settings.reissueDestination;
+            if (destination) {
+                if (destination == 'reload') {
+                    window.location.reload();
+                } else if ("function" == typeof destination) {
+                    destination();
+                } else {
+                    window.location.href = destination;
+                }
             }
         }
 
