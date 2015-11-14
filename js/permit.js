@@ -18,7 +18,7 @@
         $.each($(settings.permits), function(index, value) {
 
             // Iterate through user specified permits to show permitted content
-            if($.cookie(settings.cPrefix+settings.permits[index]))
+            if(settings.validPermit(settings.cPrefix+settings.permits[index]))
             {
                 // hide all permit content except selected permits
                 for(var i=0;i<settings.permits.length;i++)
@@ -73,13 +73,13 @@
         // This function issues new permits
         $.permit.issuePermit = function (permit,destination) {
             // create the permit, give it a value of 1
-            $.cookie(settings.cPrefix+permit, 1);
+            settings.issuePermit(settings.cPrefix+permit);
             director(destination);
         };
 
         // This function revokes a specific permit
         $.permit.revokePermit = function (permit,newPermit,destination){
-            $.removeCookie(settings.cPrefix+permit);
+            settings.revokePermit(settings.cPrefix+permit);
             // if a new permit type is specified, issue that
             if(newPermit){
                 $.permit.issuePermit(newPermit);
@@ -109,7 +109,7 @@
             permit = typeof permit !== 'undefined' ? permit : settings.permits;
             var i = 0;
             $.each($(settings.permits), function(index, value) {
-                if($.cookie(settings.cPrefix+settings.permits[index]))
+                if(settings.validPermit(settings.cPrefix+settings.permits[index]))
                 {
                     i++;
                 }
@@ -130,7 +130,7 @@
         // This function revokes all permits
         function revokeAllPermits(permits){
             $.each($(permits), function(index, value) {
-                $.removeCookie(settings.cPrefix+value);
+                settings.revokePermit(settings.cPrefix+value);
             });
         }
 
@@ -165,7 +165,19 @@
         // Otherwise it redirects to the specified location.
         reissueDestination: 'reload',
         // Prefix for cookies name
-        cPrefix: 'permit_'
+        cPrefix: 'permit_',
+
+        // Function for issue permit
+        // @param {name} name permit
+        issuePermit: function (name) { return $.cookie(name, 1); },
+
+        // Function for revoke permit
+        // @param {name} name permit
+        revokePermit: function (name) { return  $.removeCookie(name); },
+
+        // Function for check permit
+        // @param {name} name permit
+        validPermit: function (name) { return $.cookie(name); },
     };
 
 })(jQuery, window, document );
