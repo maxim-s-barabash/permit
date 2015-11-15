@@ -5,11 +5,10 @@
  */
 ;(function($) {
     
-    /** permit is a jQuery plugin that makes building interactive, multi-state prototypes for websites and apps easy.
+    /** permit is a jQuery plugin that makes building interactive, multi-state 
+    * prototypes for websites and apps easy.
     * @constructor
-    * @param {string} options - reloads current page
-    * @param {string} [destination=url]      - redirect to url
-    * @param {null}   [destination=null]     - apply state on current pages
+    * @param {object} options
     */
     $.permit = function(options) {
 
@@ -99,7 +98,7 @@
                 }
             } else {
                 hide();
-                apply();
+                show();
             }
         }
 
@@ -145,7 +144,7 @@
             });
         }
 
-        function apply() {
+        function show() {
             $.each($(options.permits), function(index, value) {
 
                 // Iterate through user specified permits to show permitted
@@ -224,7 +223,7 @@
 
         function init() {
             hide();
-            apply();
+            show();
             bind();
             buildPermitAgent(options.permits);
         }
