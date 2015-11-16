@@ -14,6 +14,7 @@
     "*.json",
     "*.md",
     "*.txt",
+    "*.html",
     "demo",
     "img"
   ]
