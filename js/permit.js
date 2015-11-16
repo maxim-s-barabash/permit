@@ -233,6 +233,7 @@
         $.extend($.permit, {
             issuePermit : issuePermit,
             revokePermit : revokePermit,
+            revokeAllPermits : revokeAllPermits,
             init : init,
         });
 
