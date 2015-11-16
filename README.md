@@ -21,7 +21,7 @@ Permit.js makes simulating those different situations a breeze. It's designed fo
 
 ## Requirements
 *	jQuery
-*	jquery.cookie plugin
+*	jquery.cookie plugin (opcional)
 
 ## Usage
 Please see http://www.technotarek.com/permit/permit.html
