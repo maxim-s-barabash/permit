@@ -1,0 +1,20 @@
+{
+  "name": "permit",
+  "version": "0.3.0",
+  "homepage": "https://github.com/maxim-s-barabash/permit",
+  "main": [
+    "./js/permit.js"
+  ],
+  "dependencies": {
+    "jquery": ">=1.2"
+  },
+  "ignore": [
+    "test",
+    ".*",
+    "*.json",
+    "*.md",
+    "*.txt",
+    "demo",
+    "img"
+  ]
+}
