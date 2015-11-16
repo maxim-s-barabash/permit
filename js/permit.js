@@ -61,12 +61,18 @@
             return $.cookie(name, '1');
         }
 
-        // ************ PUBLIC FUNCTIONS ************** //
-
-        // This function issues new permits
+        /**
+         * This function issues new permits
+         *.
+         * @param {string,array}   name permit
+         * @param {string,null}    destination
+         */
         function issuePermit(permit, destination) {
             // create the permit, give it a value of 1
-            options.issuePermit(options.cPrefix + permit);
+            permit = permit instanceof Array ? permit : permit.split(',');
+            permit.forEach(function(value) {
+               options.issuePermit(options.cPrefix + value);
+            });
             director(destination);
         }
 
