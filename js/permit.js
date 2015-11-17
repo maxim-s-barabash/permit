@@ -23,6 +23,7 @@
             reissueDestination : 'reload',
             // Prefix for cookies name
             cPrefix : 'permit_',
+            inlineStyle: false,
 
             issuePermit : issuePermitFromCookie,
             revokePermit : revokePermitFromCookie,
@@ -30,6 +31,7 @@
         };
 
         options = $.extend({}, defaults, options);
+        var $inlineStyle;
 
         /**
          * Function for check permit
@@ -142,47 +144,60 @@
         }
 
         function hide() {
-            // hide default permitted content
-            $('.permit-all, .permit-force').hide();
-            // hide user specified permitted content
-            $.each($(options.permits), function(index, value) {
-                $('.permit-' + value).hide();
-            });
+            if (!options.inlineStyle){
+                // hide default permitted content
+                $('.permit-all, .permit-force').hide();
+                // hide user specified permitted content
+                $.each($(options.permits), function(index, value) {
+                    $('.permit-' + value).hide();
+                });
+            } else {
+                $inlineStyle.html('.permit-none {display: inline !important;}')
+            }
         }
 
         function show() {
-            $.each($(options.permits), function(index, value) {
+            if (!options.inlineStyle){
+                $.each($(options.permits), function(index, value) {
 
-                // Iterate through user specified permits to show permitted
-                // content
-                if (options.validPermit(options.cPrefix
-                        + options.permits[index])) {
-                    // hide all permit content except selected permits
-                    for ( var i = 0; i < options.permits.length; i++) {
-                        if (i != index) {
-                            $('.permit-' + value).hide();
-                        }
+                    // Iterate through user specified permits to show permitted
+                    // content
+                    if (options.validPermit(options.cPrefix
+                            + options.permits[index])) {
+                        $('.permit-' + value).show();
                     }
-                    // show permitted content
-                    $('.permit-' + value).show();
-                }
-            });
-
-            // check to see if any permits exist, if not...
-            if (permitExists() < 1) {
-                // show public content
-                $('.permit-none').show();
-                // show forced message content based on data-permit-message
-                // attribute
-                $('.permit-force').each(function() {
-                    var message = $(this).data('permit-message');
-                    $(this).html(message).show();
                 });
+
+                // check to see if any permits exist, if not...
+                if (permitExists() < 1) {
+                    // show public content
+                    $('.permit-none').show();
+                    // show forced message content based on data-permit-message
+                    // attribute
+                    $('.permit-force').each(function() {
+                        var message = $(this).data('permit-message');
+                        $(this).html(message).show();
+                    });
+                } else {
+                    // if any permit exists, hide permit-less state content
+                    $('.permit-none').hide();
+                    // if any permit exists, show globally permitted state content
+                    $('.permit-all').show();
+                }
             } else {
-                // if any permit exists, hide permit-less state content
-                $('.permit-none').hide();
-                // if any permit exists, show globally permitted state content
-                $('.permit-all').show();
+                var p = [];
+                if (permitExists()) {
+                    p.push('.permit-all');
+                    p.push('.permit-force');
+                } else {
+                    p.push('.permit-none');
+                }
+                $.each($(options.permits), function(index, value) {
+                    if (options.validPermit(options.cPrefix + options.permits[index])) {
+                        p.push('.permit-' + value);
+                    }
+                })
+                $inlineStyle.html(p + ' {display: inline !important;}');
             }
         }
 
@@ -228,6 +243,10 @@
         }
 
         function init() {
+            if (options.inlineStyle) {
+                $inlineStyle = $('<style>', {type:"text/css"})
+                $('head').append($inlineStyle)
+            }
             hide();
             show();
             bind();
