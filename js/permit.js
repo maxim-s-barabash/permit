@@ -1,6 +1,6 @@
 /*
  * Permit.js
- * @version		0.3.0
+ * @version		0.4.0
  * @copyright	Tarek Anandan (http://www.technotarek.com)
  */
 ;(function($) {
@@ -26,7 +26,7 @@
 
             issuePermit : issuePermitFromCookie,
             revokePermit : revokePermitFromCookie,
-            validPermit : validPermitFromCookie,
+            validPermit : validPermitFromCookie
         };
 
         options = $.extend({}, defaults, options);
@@ -263,10 +263,10 @@
             issuePermit : issuePermit,
             revokePermit : revokePermit,
             revokeAllPermits : revokeAllPermits,
-            init : init,
+            init : init
         });
 
         init();
     };
 
-})(jQuery, window, document);
+})(jQuery);
