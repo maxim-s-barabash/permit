@@ -143,7 +143,7 @@
 
         // This function revokes all permits
         function revokeAllPermits(permits) {
-            permits.forEach(function(index, value) {
+            permits.forEach(function(value) {
                 options.revokePermit(options.cPrefix + value);
             });
         }
