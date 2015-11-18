@@ -16,8 +16,7 @@
             // value: array permit levels, default to admin;
             // sets the available permission levels
             permits : [ 'admin' ],
-            // Specifies the action to be taken when a new permit is issued
-            // using
+            // Specifies the action to be taken when a new permit is issued using
             // the permits agent. Defaults to a javascript-enabled page reload.
             // Otherwise it redirects to the specified location.
             reissueDestination : 'reload',
@@ -36,8 +35,7 @@
         /**
          * Function for check permit
          * 
-         * @param {string}
-         *            name permit
+         * @param {string}    name permit
          */
         function validPermitFromCookie(name) {
             return ($.cookie(name) === '1');
@@ -46,8 +44,7 @@
         /**
          * Function for revoke permit
          * 
-         * @param {string}
-         *            name permit
+         * @param {string}    name permit
          */
         function revokePermitFromCookie(name) {
             return $.removeCookie(name);
@@ -56,8 +53,7 @@
         /**
          * Function for issue permit
          * 
-         * @param {string}
-         *            name permit
+         * @param {string}    name permit
          */
         function issuePermitFromCookie(name) {
             return $.cookie(name, '1');
@@ -65,23 +61,29 @@
 
         /**
          * This function issues new permits
-         *.
+         * 
          * @param {string,array}   name permit
          * @param {string,null}    destination
          */
         function issuePermit(permit, destination) {
             // create the permit, give it a value of 1
-            permit = permit instanceof Array ? permit : permit.split(',');
+            permit = permit instanceof Array ? permit : [permit];
             permit.forEach(function(value) {
                options.issuePermit(options.cPrefix + value);
             });
             director(destination);
         }
 
-        // This function revokes a specific permit
+        /**
+         * This function revokes a specific permit
+         * 
+         * @param {string,array}         name permit
+         * @param {string,array,null}    newPermit if a type is specified, issue that
+         * @param {string,null}          destination
+         */
         function revokePermit(permit, newPermit, destination) {
-            options.revokePermit(options.cPrefix + permit);
-            // if a new permit type is specified, issue that
+            permit = permit instanceof Array ? permit : [permit];
+            revokeAllPermits(permit);
             if (newPermit) {
                 issuePermit(newPermit);
             }
@@ -110,15 +112,18 @@
             }
         }
 
-        // This function checks to see if any permits exist
-        function permitExists(permit) {
+        /**
+        * This function checks to see if any permits exist
+        * 
+        * @param {array,null}         permits
+         */
+        function permitExists(permits) {
             // if no parameter is passed to the function, set the parameter
             // equal to the permits setting object
-            permit = typeof permit !== 'undefined' ? permit : options.permits;
+            permits = permits ? permits : options.permits;
             var i = 0;
-            $.each($(options.permits), function(index, value) {
-                if (options.validPermit(options.cPrefix
-                        + options.permits[index])) {
+            permits.forEach(function(value) {
+                if (options.validPermit(options.cPrefix + value)) {
                     i++;
                 }
             });
@@ -129,7 +134,7 @@
         // new permits
         function buildPermitAgent(permits) {
             var a = '<select id="permit-options" class="form-control input-sm">';
-            $.each($(permits), function(index, value) {
+            permits.forEach(function(value) {
                 a += '<option value="' + value + '">' + value + '</option>';
             });
             a += '</select>';
@@ -138,7 +143,7 @@
 
         // This function revokes all permits
         function revokeAllPermits(permits) {
-            $.each($(permits), function(index, value) {
+            permits.forEach(function(index, value) {
                 options.revokePermit(options.cPrefix + value);
             });
         }
@@ -148,7 +153,7 @@
                 // hide default permitted content
                 $('.permit-all, .permit-force').hide();
                 // hide user specified permitted content
-                $.each($(options.permits), function(index, value) {
+                options.permits.forEach(function(value) {
                     $('.permit-' + value).hide();
                 });
             } else {
@@ -162,8 +167,7 @@
 
                     // Iterate through user specified permits to show permitted
                     // content
-                    if (options.validPermit(options.cPrefix
-                            + options.permits[index])) {
+                    if (options.validPermit(options.cPrefix + value)) {
                         $('.permit-' + value).show();
                     }
                 });
@@ -186,17 +190,17 @@
                 }
             } else {
                 var p = [];
-                if (permitExists()) {
+                options.permits.forEach(function(value) {
+                    if (options.validPermit(options.cPrefix + value)) {
+                        p.push('.permit-' + value);
+                    }
+                })
+                if (p.length) {
                     p.push('.permit-all');
                     p.push('.permit-force');
                 } else {
                     p.push('.permit-none');
                 }
-                $.each($(options.permits), function(index, value) {
-                    if (options.validPermit(options.cPrefix + options.permits[index])) {
-                        p.push('.permit-' + value);
-                    }
-                })
                 $inlineStyle.html(p + ' {display: inline !important;}');
             }
         }
